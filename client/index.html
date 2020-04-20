@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Streaming Example</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"> 
+</head>
+<body>
+    <h1 class="page-title">WebRTC Streaming Example by Abhinav</h1>
+
+    <div id="content">
+
+        <div class="video-container">
+            <div class="video-container__video-wrapper">
+                <video id="stream-video" autoplay></video>
+                <video id="self-video" autoplay></video>
+            </div>
+            <div class="video-container__controls">
+                <button class="video-container__controls__toggle-mute">Mute</button>
+                <button class="video-container__controls__toggle-video">Stop Video</button>
+                <button class="video-container__controls__toggle-screen-share">Screen Share</button>
+            </div>
+        </div>
+        <div id="sidebar">
+            <div class="remote-videos">
+
+            </div>
+
+            <div class="participants">
+                <!--<div class="participants__participant">
+                    <div class="participants__participant__name">
+                        Abhinav Gunwant
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/index.js"></script>
+</body>
+</html>

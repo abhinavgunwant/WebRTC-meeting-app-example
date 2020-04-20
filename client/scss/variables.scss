@@ -1,0 +1,16 @@
+// Colors
+$black: #000000;
+$grey1: #444444;
+$grey2: #555555;
+$grey3: #777777;
+$grey4: #aaaaaa;
+$grey5: #cccccc;
+$grey6: #eeeeee;
+$white: #ffffff;
+
+// Dimensions
+$page-title-height: 2rem;
+$page-title-margin: 10px;
+$content-height: #{calc(100vh - (#{$page-title-height} + 2 * #{$page-title-margin}))};
+$video-container-controls-height: 32px;
+$video-wrapper-height: #{calc(#{$content-height} - #{$video-container-controls-height})};

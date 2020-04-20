@@ -1,0 +1,73 @@
+@import 'variables.scss';
+
+body {
+    font-family: 'Open Sans';
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Open Sans';
+}
+
+h1.page-title {
+    font-size: $page-title-height;
+    margin: $page-title-margin 0;
+    line-height: $page-title-height;
+    text-align: center;
+}
+
+div#content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: $content-height;
+
+    div.video-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        height: $content-height;
+        background: $grey1;
+        flex-grow: 1;
+
+        div.video-container__video-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: $video-wrapper-height;
+
+            video#stream-video {
+                display: flex;
+                width: 100%;
+                height: auto;
+                box-shadow: 0px 0px 5px $black;
+                flex-grow: 1;
+                max-height: #{ $video-wrapper-height }
+            }
+
+            video#self-video {
+                position: fixed;
+                height: 100px;
+                width: auto;
+                box-shadow: 0px 0px 5px $black;
+                right: 380px;
+                bottom: 42px;
+            }
+        }
+
+        div.video-container__controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: $video-container-controls-height;
+        }
+    }
+
+    div#sidebar {
+        width: 360px;
+        height: $content-height;
+        border: $black 1px solid;
+    }
+}
+
