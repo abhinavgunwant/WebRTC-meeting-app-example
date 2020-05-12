@@ -10,7 +10,13 @@ const selfVideoElement = document.querySelector('video#self-video');
 const sidebarElement = document.querySelector('div#sidebar');
 const remoteVideosElement = document.querySelector('div.remote-videos');
 
-let socketIO = io();
+const contentElement = document.querySelector('div#content');
+const beforeContentLoadElement = document.querySelector('div#before-content-load');
+const displayNameInputElement = document.querySelector('input#inp-display-name');
+const joinButtonElement = document.querySelector('button#inp-join');
+const inputErrorMessageElement = document.querySelector('div#inp-error-message');
+
+let socketIO = null;
 
 /**
  * Contains the list of sockets
@@ -71,43 +77,6 @@ let pc1 = null;
 let pc2 = null;
 
 /**
- * Updates the online participants to the right of the screen(in the sidebar).
- * 
- * @param {string} socketIds String variable containing socket-id string
- */
-const updateParticipantList = (socketIds) => {
-    const participantsEl = document.querySelector('.participants');
-
-    socketIds.forEach(socketId => {
-        const participant = document.querySelector(`.participants__participant#${socketId}`);
-
-        if (!participant) {
-            const participantContainerEl = createParticipantItemContainer(socketId);
-            participantsEl.appendChild(participantContainerEl);
-        }
-    });
-};
-
-/**
- * Creates an HTML element for a participant.
- * 
- * @param {string} socketId String variable containing socket-id string
- */
-const createParticipantItemContainer = (socketId) => {
-    const containerEl = document.createElement('div');
-    containerEl.setAttribute('class', 'participants__participant');
-    containerEl.setAttribute('id', socketId);
-
-    const usernameEl = document.createElement('div');
-    usernameEl.setAttribute('class', 'participants__participant__name');
-    usernameEl.innerHTML = `Socket: ${socketId}`;
-
-    containerEl.appendChild(usernameEl);
-
-    return containerEl;
-};
-
-/**
  * Gets the media device stream
  * @param {device} device
  * 
@@ -164,6 +133,46 @@ const onIceCandidate = async (pc, pcName, event) => {
     }
 }
 
+const onCreateAnswerSuccess = async (localDesc) => {
+    try {
+        await pc2.setLocalDescription(localDesc);
+        console.log('Set local success!');
+    } catch (e) {
+        console.log('Error while setting local description. ', e);
+    }
+
+    try {
+        await pc1.setRemoteDescription(localDesc);
+        console.log('Set remote success!');
+    } catch (e) {
+        console.log('Error on setting remote for pc1. ', e);
+    }
+};
+
+const onCreateOfferSuccess = async (localDesc) => {
+    try {
+        console.log('setting local description on pc1');
+        await pc1.setLocalDescription(localDesc);
+    } catch (e) {
+        console.log('Error while setting local description. ', e);
+    }
+
+    try {
+        console.log('setting remote description on pc2');
+        await pc2.setRemoteDescription(localDesc);
+    } catch (e) {
+        console.log('Error while setting remote description on pc2. ', e);
+    }
+
+    try {
+        console.log('creating answer');
+        const answer = await pc2.createAnswer();
+        await onCreateAnswerSuccess(answer);
+    } catch (e) {
+        console.log('Error while creating answer. ', e);
+    }
+};
+
 const gotRemoteStream = (e) => {
     if (
         incomingCameraStreams.length == 0
@@ -196,6 +205,18 @@ async function start () {
     pc2.addEventListener('track', gotRemoteStream);
 
     deviceCameraStream.getTracks().forEach(track => pc1.addTrack(track, deviceCameraStream));
+
+    try {
+        console.log('creating offer');
+        const offer = await pc1.createOffer({
+            offerToReceiveAudio: 1,
+            offerToReceiveVideo: 1,
+        });
+
+        await onCreateOfferSuccess(offer);
+    } catch (e) {
+        onCreateSessionDescriptionError(e);
+    }
 }
 
 /**
@@ -272,32 +293,21 @@ toggleScreenShareButton.onclick = (event) => {
     console.log('Screen Share state is now: ', screenShareState);
 };
 
-start();
+const hideBeforeContentLoadScreen = () => {
+    beforeContentLoadElement.style.display = 'none';
+    contentElement.style.display = 'flex';
+};
 
-socketIO.on('connection', socket => {
-    const existingSocket = socketList.find( sock => sock === socket.id );
-
-    if (!existingSocket) {
-        socketList.push(socket.id);
-
-        socket.emit('update-participants', {
-            users: socketList.filter(sock => sock !== socket.id),
-        });
-
-        socket.broadcase.emit('update-participants', {
-            users: [socket.id],
-        });
+const main = () => {
+    if (sessionStorage.getItem('displayName')) {
+        hideBeforeContentLoadScreen();
+        start();
+        initSocket();
     }
+}
+
+['change', 'keydown'].forEach(e => {
+    displayNameInputElement.addEventListener(e, (event) => {
+        inputErrorMessageElement.style.display = 'none';
+    });
 });
-
-socketIO.on('update-participants', ({ users }) => {
-    updateParticipantList(users);
-})
-
-socketIO.on('remove-participant', ({ socketId }) => {
-    const elToRemove = document.getElementById(socketId);
-
-    if (elToRemove) {
-        elToRemove.remove();
-    }
-})

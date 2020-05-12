@@ -16,6 +16,34 @@ h1.page-title {
     text-align: center;
 }
 
+div#before-content-load {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    justify-content: center;
+    align-items: center;
+
+    input#inp-display-name {
+        width: 300px;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    button#inp-join {
+        background: #4488ff;
+        font-size: 1.5rem;
+        padding: 6px 20px;
+        border-radius: 2px;
+        border: none;
+        color: #ffffff;
+        margin-top: 10px;
+    }
+
+    div#inp-error-message {
+        color: #ff0000;
+    }
+}
+
 div#content {
     display: flex;
     justify-content: center;
@@ -68,6 +96,16 @@ div#content {
         width: 360px;
         height: $content-height;
         border: $black 1px solid;
+
+        .participants {
+            .participants__participant {
+                padding: 10px 20px;
+
+                &:hover {
+                    background: #eeeeee;
+                }
+            }
+        }
     }
 }
 

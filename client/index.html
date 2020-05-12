@@ -11,7 +11,7 @@
 <body>
     <h1 class="page-title">WebRTC Streaming Example by Abhinav</h1>
 
-    <div id="content">
+    <div id="content" style="display:none">
 
         <div class="video-container">
             <div class="video-container__video-wrapper">
@@ -39,7 +39,17 @@
         </div>
     </div>
 
+    <!-- Shows up on the first load and asks user to input display name-->
+    <div id="before-content-load">
+        <input id="inp-display-name" placeholder="Enter your display name" type="text" />
+        <button id="inp-join">Join</button>
+        <div id="inp-error-message" style="display: none;">
+            Please enter your display name to the input field above in order to join the meeting.
+        </div>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/index.js"></script>
+    <script src="./js/sockets.js"></script>
 </body>
 </html>
